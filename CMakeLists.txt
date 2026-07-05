@@ -8,9 +8,13 @@ include(FetchContent)
 
 # ── Dobby hooking library ───────────────────────────────────────────────────
 # Pinned to 5dfc854 (2024-03-14). PATCH_COMMAND invokes cmake/DobbyPatch.cmake
-# which fixes two Android build issues in all known Dobby commits:
+# which fixes Android build issues in all known Dobby commits:
 #   1. armeabi-v7a: Cpu.h deleted from repo but registers-arm.h still includes it
-#   2. arm64-v8a: closure_bridge_arm64.asm uses Mach-O @PAGE/@PAGEOFF relocations
+#   2. arm64-v8a: closure_bridge_arm64.asm uses Mach-O @PAGE/@PAGEOFF relocations;
+#      replaced with GOT-indirect adrp+ldr for ELF shared libraries
+#   3. os_arch_features.h: OSMemory used before declared (circular include)
+#   4. ProcessRuntime.cc: load_address -> base, start -> start()
+#   5. dobby_symbol_resolver.cc: load_address -> base
 FetchContent_Declare(Dobby
     GIT_REPOSITORY https://github.com/jmpews/Dobby.git
     GIT_TAG        5dfc8546954ce3b3198132ab13fddb89ee92cdd7
@@ -22,10 +26,10 @@ set(DOBBY_BUILD_SHARED    OFF CACHE BOOL "" FORCE)
 set(DOBBY_GENERATE_SHARED OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(Dobby)
 
-# ── Dear ImGui (GLES2 backend) ──────────────────────────────────────────────
+# ── Dear ImGui (GLES2 + Android backend) ───────────────────────────────────
 FetchContent_Declare(imgui
-    GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG        v1.91.6
+    GIT_REPOSITORY https://github.com/dvaustria741-a11y/imgui.git
+    GIT_TAG        776bf2ab0d61e719e58f2c6d27d109ab5dcf2af1
     GIT_SHALLOW    TRUE
 )
 FetchContent_MakeAvailable(imgui)
