@@ -3,9 +3,11 @@
 #include <sys/mman.h>
 #include <GLES2/gl2ext.h>
 
-// malloc_trim is available in Android bionic (API 26+) but not declared in
-// NDK headers — forward-declare it directly.
-extern "C" int malloc_trim(size_t pad);
+// malloc_trim exists in Android bionic (API 26+) but is absent from the NDK's
+// libc link stubs, causing an "undefined symbol" linker error.
+// Declaring it weak lets the linker succeed; the null check guards the call at
+// runtime in case the device somehow doesn't have it.
+extern "C" __attribute__((weak)) int malloc_trim(size_t pad);
 
 static std::vector<std::shared_ptr<Feature>> features;
 
@@ -26,7 +28,7 @@ static uint64_t getMemUsageKB() {
 }
 
 static void doMemClean() {
-    malloc_trim(0);
+    if (malloc_trim) malloc_trim(0);
     // Release unused anonymous mappings
     std::ifstream maps("/proc/self/maps");
     std::string line;
