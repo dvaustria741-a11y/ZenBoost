@@ -1,6 +1,8 @@
 #include "FeatureManager.h"
 #include "../../include/ZenBoost.h"
 #include <sys/mman.h>
+#include <malloc.h>
+#include <GLES2/gl2ext.h>
 
 static std::vector<std::shared_ptr<Feature>> features;
 
