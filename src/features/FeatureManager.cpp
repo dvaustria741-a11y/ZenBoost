@@ -1,8 +1,11 @@
 #include "FeatureManager.h"
 #include "../../include/ZenBoost.h"
 #include <sys/mman.h>
-#include <malloc.h>
 #include <GLES2/gl2ext.h>
+
+// malloc_trim is available in Android bionic (API 26+) but not declared in
+// NDK headers — forward-declare it directly.
+extern "C" int malloc_trim(size_t pad);
 
 static std::vector<std::shared_ptr<Feature>> features;
 
