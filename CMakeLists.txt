@@ -6,11 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 
-# ── Dobby hooking library (branch = master) ─────────────────────────────────
+# ── Dobby hooking library (pinned stable commit) ─────────────────────────────
 FetchContent_Declare(Dobby
     GIT_REPOSITORY https://github.com/jmpews/Dobby.git
-    GIT_TAG        master
-    GIT_SHALLOW    TRUE
+    GIT_TAG        51a0682de31dfe35c3ecd77ed093ddb2f90bcce5
 )
 set(DOBBY_BUILD_SHARED    OFF CACHE BOOL "" FORCE)
 set(DOBBY_GENERATE_SHARED OFF CACHE BOOL "" FORCE)
